@@ -28,21 +28,16 @@ from pygame import Rect
 #
 
 # Calc the gradient 'm' of a line between p1 and p2
-
-
-def calculateGradient(p1, p2):
-
-    # Ensure that the line is not vertical
+    
+def calculate_gradient(p1, p2):
     if (p1[0] != p2[0]):
-        m = (p1[1] - p2[1]) / (p1[0] - p2[0])
-        return m
-    else:
-        return None
+        return (p1[1] - p2[1]) / (p1[0] - p2[0])
+    return None
 
 # Calc the point 'b' where line crosses the Y axis
 
 
-def calculateYAxisIntersect(p, m):
+def calculate_y_axis_intersect(p, m):
     return p[1] - (m * p[0])
 
 # Calc the point where two infinitely long lines (p1 to p2 and p3 to p4) intersect.
@@ -53,9 +48,9 @@ def calculateYAxisIntersect(p, m):
 # all four points of the two lines
 
 
-def getIntersectPoint(p1, p2, p3, p4):
-    m1 = calculateGradient(p1, p2)
-    m2 = calculateGradient(p3, p4)
+def get_intersect_point(p1, p2, p3, p4):
+    m1 = calculate_gradient(p1, p2)
+    m2 = calculate_gradient(p3, p4)
 
     # See if the the lines are parallel
     if (m1 != m2):
@@ -64,23 +59,23 @@ def getIntersectPoint(p1, p2, p3, p4):
         # See if either line is vertical
         if (m1 is not None and m2 is not None):
             # Neither line vertical
-            b1 = calculateYAxisIntersect(p1, m1)
-            b2 = calculateYAxisIntersect(p3, m2)
+            b1 = calculate_y_axis_intersect(p1, m1)
+            b2 = calculate_y_axis_intersect(p3, m2)
             x = (b2 - b1) / (m1 - m2)
             y = (m1 * x) + b1
         else:
             # Line 1 is vertical so use line 2's values
             if (m1 is None):
-                b2 = calculateYAxisIntersect(p3, m2)
+                b2 = calculate_y_axis_intersect(p3, m2)
                 x = p1[0]
                 y = (m2 * x) + b2
             # Line 2 is vertical so use line 1's values
             elif (m2 is None):
-                b1 = calculateYAxisIntersect(p1, m1)
+                b1 = calculate_y_axis_intersect(p1, m1)
                 x = p3[0]
                 y = (m1 * x) + b1
             else:
-                assert false
+                assert False
 
         return ((x, y),)
     else:
@@ -90,10 +85,10 @@ def getIntersectPoint(p1, p2, p3, p4):
         # lays on both line segments
         b1, b2 = None, None  # vertical lines have no b value
         if m1 is not None:
-            b1 = calculateYAxisIntersect(p1, m1)
+            b1 = calculate_y_axis_intersect(p1, m1)
 
         if m2 is not None:
-            b2 = calculateYAxisIntersect(p3, m2)
+            b2 = calculate_y_axis_intersect(p3, m2)
 
         # If these parallel lines lay on one another
         if b1 == b2:
@@ -109,9 +104,9 @@ def getIntersectPoint(p1, p2, p3, p4):
 # intesect o None if not
 
 
-def calculateIntersectPoint(p1, p2, p3, p4):
+def calculate_intersect_point(p1, p2, p3, p4):
 
-    p = getIntersectPoint(p1, p2, p3, p4)
+    p = get_intersect_point(p1, p2, p3, p4)
 
     if p is not None:
         width = p2[0] - p1[0]
@@ -183,25 +178,25 @@ if __name__ == "__main__":
     p11 = (472.0, 116.0)
     p12 = (542.0, 116.0)
 
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p1, p2, p3, p4), "line 1 line 2 should intersect"
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p3, p4, p1, p2), "line 2 line 1 should intersect"
-    assert None == calculateIntersectPoint(
+    assert None == calculate_intersect_point(
         p1, p2, p5, p6), "line 1 line 3 shouldn't intersect"
-    assert None == calculateIntersectPoint(
+    assert None == calculate_intersect_point(
         p3, p4, p5, p6), "line 2 line 3 shouldn't intersect"
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p1, p2, p7, p8), "line 1 line 4 should intersect"
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p7, p8, p1, p2), "line 4 line 1 should intersect"
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p1, p2, p9, p10), "line 1 line 5 should intersect"
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p9, p10, p1, p2), "line 5 line 1 should intersect"
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p7, p8, p9, p10), "line 4 line 5 should intersect"
-    assert None != calculateIntersectPoint(
+    assert None != calculate_intersect_point(
         p9, p10, p7, p8), "line 5 line 4 should intersect"
 
     print("\nSUCCESS! All asserts passed for doLinesIntersect")

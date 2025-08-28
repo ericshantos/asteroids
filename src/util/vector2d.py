@@ -16,11 +16,11 @@
 #    Copyright (C) 2018  Francisco Sanchez Arroyo
 #
 
+from dataclasses import dataclass
 
+@dataclass
 class Vector2d:
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    x: float
+    y: float
 
 # needs a copy constructor and method for vector addition etc
