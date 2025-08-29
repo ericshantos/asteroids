@@ -1,17 +1,17 @@
 from abc import ABC, abstractmethod
-
+from typing import List
 
 class Moverable(ABC):
     @abstractmethod
-    def move_sprites(self):
+    def move_sprites(self, sprites: List) -> None:
         raise NotImplementedError
 
 class SpriteMover(Moverable):
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
 
-    def move_sprites(self, sprites):
+    def move_sprites(self, sprites: List) -> None:
         for sprite in sprites:
             sprite.move()
             if sprite.position.x < 0:

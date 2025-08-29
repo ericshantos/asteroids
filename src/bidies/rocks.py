@@ -4,22 +4,22 @@ from .datas import RockData
 
 from ..util import VectorSprite, Vector2d
 
+from typing import List, Tuple
+
 
 class Rock(VectorSprite):
     
     # Create the rock polygon to the given scale
-    def __init__(self, position, rock_type, data = None):
-        if data is None:
-            data = RockData()
-        scale = data.scale[rock_type]
-        velocity = data.velocities[rock_type]
-        heading = Vector2d(random.uniform(-velocity, velocity), random.uniform(-velocity, velocity))
-        
+    def __init__(self, position: Vector2d, rock_type: int, data: RockData = None):
+        scale: float = data.scale[rock_type]
+        velocity: float = data.velocities[rock_type]
+        heading: Vector2d = Vector2d(random.uniform(-velocity, velocity), random.uniform(-velocity, velocity))
+
         # Ensure that the rocks don't just sit there or move along regular lines
         if heading.x == 0: heading.x = 0.1
         if heading.y == 0: heading.y = 0.1
                         
-        self.data = data
+        self.data = data or RockData()
         self.rock_type = rock_type
         new_point_list = [self.scale(point, scale) for point in self.create_point_list()]
         
@@ -27,8 +27,7 @@ class Rock(VectorSprite):
 
 
     # Create different rock type pointlists
-    def create_point_list(self):
-        
+    def create_point_list(self) -> List[Tuple[int, int]]:
         if (self.data.rock_shape == 1):
             point_list = [(-4,-12), (6,-12), (13, -4), (13, 5), (6, 13), (0,13), (0,4),\
                      (-8,13), (-15, 4), (-7,1), (-15,-3)]
@@ -52,8 +51,8 @@ class Rock(VectorSprite):
         return point_list
     
     # Spin the rock when it moves
-    def move(self):
-        super().move()                        
-        
+    def move(self) -> None:
+        super().move()
+
         # Original Asteroid didn't have spinning rocks but they look nicer
         self.angle += 1

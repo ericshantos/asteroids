@@ -18,6 +18,8 @@
 
 from pygame import Rect
 
+from typing import Tuple, List, Optional
+
 #    Geometry functions to find intersecting lines.
 #    Thes calc's use this formula for a straight line:-
 #        y = mx + b where m is the gradient and b is the y value when x=0
@@ -28,8 +30,8 @@ from pygame import Rect
 #
 
 # Calc the gradient 'm' of a line between p1 and p2
-    
-def calculate_gradient(p1, p2):
+
+def calculate_gradient(p1: Tuple[int, int], p2: Tuple[int, int]) -> Optional[float]:
     if (p1[0] != p2[0]):
         return (p1[1] - p2[1]) / (p1[0] - p2[0])
     return None
@@ -37,7 +39,7 @@ def calculate_gradient(p1, p2):
 # Calc the point 'b' where line crosses the Y axis
 
 
-def calculate_y_axis_intersect(p, m):
+def calculate_y_axis_intersect(p: Tuple[int, int], m: float) -> float:
     return p[1] - (m * p[0])
 
 # Calc the point where two infinitely long lines (p1 to p2 and p3 to p4) intersect.
@@ -48,7 +50,7 @@ def calculate_y_axis_intersect(p, m):
 # all four points of the two lines
 
 
-def get_intersect_point(p1, p2, p3, p4):
+def get_intersect_point(p1: Tuple[int, int], p2: Tuple[int, int], p3: Tuple[int, int], p4: Tuple[int, int]) -> Optional[Tuple[float, float]]:
     m1 = calculate_gradient(p1, p2)
     m2 = calculate_gradient(p3, p4)
 
@@ -104,7 +106,7 @@ def get_intersect_point(p1, p2, p3, p4):
 # intesect o None if not
 
 
-def calculate_intersect_point(p1, p2, p3, p4):
+def calculate_intersect_point(p1: Tuple[int, int], p2: Tuple[int, int], p3: Tuple[int, int], p4: Tuple[int, int]) -> Optional[Tuple[float, float]]:
 
     p = get_intersect_point(p1, p2, p3, p4)
 

@@ -2,11 +2,13 @@ import random
 
 from ..util import Vector2d, VectorSprite
 
+from typing import List, Tuple
+
 
 class ShipExplosion:
     def __init__(self, ship):
         self.ship = ship
-        self.shape = [
+        self.shape: List[List[Tuple[int, int]]] = [
             [(0, -10), (6, 10)],
             [(6, 10), (3, 7)],
             [(3, 7), (-3, 7)],
@@ -14,12 +16,12 @@ class ShipExplosion:
             [(-6, 10), (0, -10)]
         ]
 
-    def explode(self):
+    def explode(self) -> None:
         for s in self.shape:
             self.ship.add_ship_debris(s)
 
     # Create a piece of ship debris
-    def add_ship_debris(self, point_list):
+    def add_ship_debris(self, point_list: List[Tuple[int, int]]) -> None:
         heading = Vector2d(0, 0)
         position = Vector2d(self.ship.position.x, self.ship.position.y)
         debris = VectorSprite(position, heading, point_list, self.ship.angle)

@@ -5,19 +5,19 @@ from ..shotting import Shooter
 from ..util import Vector2d
 from .datas import SaucerData 
 
+from ..stage import Stage
+from ..ship import Ship
+
 
 class Saucer(Shooter):
-    def __init__(self, stage, saucer_type, ship, data=None):
-        if data is None:
-            data = SaucerData()
-
+    def __init__(self, stage: Stage, saucer_type: int, ship: Ship, data=None):
         self.saucer_type = saucer_type
         self.ship = ship
-        self.scoreValue = data.scores[saucer_type]
-        self.data = data
+        self.score_value = data.scores[saucer_type]
+        self.data = data or SaucerData()
 
-        position = Vector2d(0.0, random.randrange(0, stage.height))
-        heading = Vector2d(data.velocities[saucer_type], 0.0)
+        position: Vector2d = Vector2d(0.0, random.randrange(0, stage.height))
+        heading: Vector2d = Vector2d(data.velocities[saucer_type], 0.0)
 
         player.stop_sound("ssaucer")
         player.stop_sound("lsaucer")
@@ -29,8 +29,8 @@ class Saucer(Shooter):
         self.lastx = 0
         
         # Scale the shape
-        newPointList = [self.scale(point, data.scales[saucer_type]) for point in data.point_list]
-        super().__init__(position, heading, newPointList, stage)
+        new_point_list = [self.scale(point, data.scales[saucer_type]) for point in data.point_list]
+        super().__init__(position, heading, new_point_list, stage, max_bullet=1)
 
     # Set the bullet velocity and create the bullet
     def launch_bullet(self):

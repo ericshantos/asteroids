@@ -2,39 +2,47 @@ from ...util import Vector2d
 from ...bidies import Rock, Debris, rock_data
 from ...sound_manager import player
 
+from ...stage import Stage
+from .ship_manager import ShipManager
+from .rock_manager import RockManager
+from .saucer_manager import SaucerManager
+
+from typing import Tuple
+
+
 class CollisionSystem:
-    def __init__(self, stage, ship_manager, rock_manager, saucer_manager):
+    def __init__(self, stage: Stage, ship_manager: ShipManager, rock_manager: RockManager, saucer_manager: SaucerManager):
         self.stage = stage
         self.ship_manager = ship_manager
         self.rock_manager = rock_manager
         self.saucer_manager = saucer_manager
 
-    def update(self, score):
+    def update(self, score: int) -> Tuple[int, bool]:
         ship = self.ship_manager.ship
         saucer = self.saucer_manager.saucer
         new_score = score
-        shipHit, saucerHit = False, False
+        ship_hit, saucer_hit = False, False
 
         # Rocks
         for rock in list(self.rock_manager.rocks):
-            rockHit = False
+            rock_hit = False
 
             if not ship.in_hyper_space and rock.collides_with(ship):
                 if rock.check_polygon_collision(ship):
-                    shipHit = True
-                    rockHit = True
+                    ship_hit = True
+                    rock_hit = True
 
             if saucer and rock.collides_with(saucer):
-                saucerHit = True
-                rockHit = True
+                saucer_hit = True
+                rock_hit = True
 
             if saucer and saucer.bullet_collision(rock):
-                rockHit = True
+                rock_hit = True
 
             if ship.bullet_collision(rock):
-                rockHit = True
+                rock_hit = True
 
-            if rockHit:
+            if rock_hit:
                 self.rock_manager.rocks.remove(rock)
                 self.stage.remove_sprite(rock)
 
@@ -63,27 +71,27 @@ class CollisionSystem:
         # Saucer collisions
         if saucer:
             if not ship.in_hyper_space and saucer.bullet_collision(ship):
-                shipHit = True
+                ship_hit = True
             if saucer.collides_with(ship):
-                shipHit = True
-                saucerHit = True
+                ship_hit = True
+                saucer_hit = True
 
-            if saucerHit:
+            if saucer_hit:
                 self.create_debris(saucer)
                 self.saucer_manager.kill_saucer()
 
         # Notifica se a nave foi atingida
-        if shipHit:
+        if ship_hit:
             self.kill_ship()
 
-        return new_score, shipHit  # <-- retorna shipHit
+        return new_score, ship_hit
 
-    def create_debris(self, sprite):
+    def create_debris(self, sprite) -> None:
         for _ in range(25):
             debris = Debris(Vector2d(sprite.position.x, sprite.position.y), self.stage)
             self.stage.add_sprite(debris)
 
-    def kill_ship(self):
+    def kill_ship(self) -> None:
         player.stop_sound("thrust")
         player.play_sound("explode2")
         self.ship_manager.remove_life()

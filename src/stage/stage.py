@@ -2,16 +2,18 @@ from .rederer import Renderer, Renderable
 from .sprite_mover import SpriteMover, Moverable
 from .sprites_manager import SpriteManager
 
+from typing import Optional, Tuple
+
 import pygame
 
 
 class Stage:
     def __init__(self, 
-        caption, 
-        dimensions=None, 
-        renderer=None, 
-        sprite_mover=None, 
-        sprite_manager=None
+        caption: str, 
+        dimensions: Optional[Tuple[int, int]] = None, 
+        renderer: Optional[Renderer] = None, 
+        sprite_mover: Optional[SpriteMover] = None, 
+        sprite_manager: Optional[SpriteManager] = None
     ):
         pygame.init()
 
@@ -29,20 +31,19 @@ class Stage:
         self.sprite_mover: Moverable = sprite_mover or SpriteMover(self.width, self.height)
         self.sprite_manager: SpriteManager = sprite_manager or SpriteManager()
 
-    def add_sprite(self, sprite):
+    def add_sprite(self, sprite: Renderable) -> None:
         self.sprite_manager.add_sprite(sprite)
 
-    def remove_sprite(self, sprite):
+    def remove_sprite(self, sprite: Renderable) -> None:
         self.sprite_manager.remove_sprite(sprite)
 
-    def draw_sprites(self):
+    def draw_sprites(self) -> None:
         self.renderer.draw_sprites(self.sprite_manager.get_sprites())
 
-    def move_sprites(self):
+    def move_sprites(self) -> None:
         self.sprite_mover.move_sprites(self.sprite_manager.get_sprites())
 
-
-    def add_sprite_with_bounding(self, sprite):
+    def add_sprite_with_bounding(self, sprite: Renderable) -> None:
         self.add_sprite(sprite)
         sprite.boundingRect = pygame.draw.aalines(
             self.screen, sprite.color, True, sprite.draw()

@@ -122,10 +122,10 @@ class Game:
             ship.thrust_jet.accelerating = False
 
     def handle_explosion(self):
-        self.state_manager.explodingCount += 1
-        if self.state_manager.explodingCount > 180:
+        self.state_manager.exploding_count += 1
+        if self.state_manager.exploding_count > 180:
             self.state_manager.set_state("playing")
-            self.state_manager.explodingCount = 0
+            self.state_manager.exploding_count = 0
 
             for debris in self.ship_manager.ship.ship_debris_list:
                 self.stage.remove_sprite(debris)

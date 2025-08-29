@@ -2,10 +2,12 @@ import pygame
 
 from ..constants import res_dir
 
+from typing import Optional, Dict
+
 class Sounds:
     def __init__(self, ext: str):
-        self.sounds: dict = {}
-        self.ext = ext
+        self.sounds: Dict[str, pygame.mixer.Sound] = {}
+        self.ext: str = ext
 
     def init_sounds_manager(self) -> None:
         pygame.mixer.init()
@@ -13,6 +15,6 @@ class Sounds:
             if file.suffix.lower() == self.ext.lower():
                 self.sounds[file.stem.lower()] = pygame.mixer.Sound(res_dir / file.name)
 
-    def get_sound(self, name: str) -> pygame.mixer.Sound:
+    def get_sound(self, name: str) -> Optional[pygame.mixer.Sound]:
         return self.sounds.get(name)
     

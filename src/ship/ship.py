@@ -14,25 +14,26 @@ from .thrust_jet import ThrustJet
 
 from ..sound_manager import player
 
+
 class Ship(Shooter):
     def __init__(self, stage, data: Optional[ShipData] = None):
-        self.in_hyper_space = False
+        self.in_hyper_space: bool = False
         self.ship_debris_list: List[VectorSprite] = []
-        self.visible = True
-        self.data = data or ShipData()
+        self.visible: bool = True
+        self.data: ShipData = data or ShipData()
 
         heading = Vector2d(0, 0)
-        self.thrust_jet = ThrustJet(stage, self)
+        self.thrust_jet: ThrustJet = ThrustJet(stage, self)
         position = Vector2d(stage.width/2, stage.height/2)
         point_list = [(0, -10), (6, 10), (3, 7), (-3, 7), (-6, 10)]
 
         super().__init__(position, heading, point_list, stage)
-        
-        self.movement = ShipMovement(self)
-        self.explosion = ShipExplosion(self)
-        self.hyper_space = ShipHyperSpace(self)
 
-    def draw(self):
+        self.movement: ShipMovement = ShipMovement(self)
+        self.explosion: ShipExplosion = ShipExplosion(self)
+        self.hyper_space: ShipHyperSpace = ShipHyperSpace(self)
+
+    def draw(self) -> List[Tuple[int, int]]:
         if self.visible:
             if not self.in_hyper_space:
                 VectorSprite.draw(self)
@@ -40,29 +41,29 @@ class Ship(Shooter):
                 self.hyper_space.update()
         return self.transformed_point_list
 
-    def rotate_left(self):
+    def rotate_left(self) -> None:
         self.movement.rotate_left()
 
-    def rotate_right(self):
+    def rotate_right(self) -> None:
         self.movement.rotate_right()
 
-    def increase_thrust(self):
+    def increase_thrust(self) -> None:
         self.movement.increase_thrust()
 
-    def decrease_thrust(self):
+    def decrease_thrust(self) -> None:
         self.movement.decrease_thrust()
 
-    def move(self):
+    def move(self) -> None:
         VectorSprite.move(self)
         self.movement.decrease_thrust()
 
-    def explode(self):
+    def explode(self) -> None:
         self.explosion.explode()
 
-    def add_ship_debris(self, point_list: List[Tuple[int, int]]):
+    def add_ship_debris(self, point_list: List[Tuple[int, int]]) -> None:
         self.explosion.add_ship_debris(point_list)
 
-    def fire_bullet(self):
+    def fire_bullet(self) -> None:
         if not self.in_hyper_space:
             vx = self.data.bullet_velocity * math.sin(math.radians(self.angle)) * -1
             vy = self.data.bullet_velocity * math.cos(math.radians(self.angle)) * -1
@@ -76,5 +77,5 @@ class Ship(Shooter):
 
             player.play_sound("fire")
 
-    def enter_hyper_space(self):
+    def enter_hyper_space(self) -> None:
         self.hyper_space.enter()

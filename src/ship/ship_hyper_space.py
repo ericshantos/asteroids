@@ -2,26 +2,25 @@ import random
 
 from ..util import Vector2d
 
-
 class ShipHyperSpace:
-    
+
     def __init__(self, ship):
         self.ship = ship
     
-    def enter(self):
+    def enter(self) -> None:
         if not self.ship.in_hyper_space:
             self.ship.in_hyper_space = True
             self.ship.hyper_space_ttl = 100
             self.ship.color = (0, 0, 0)
             self.ship.thrust_jet.color = (0, 0, 0)
     
-    def update(self):
+    def update(self) -> None:
         if self.ship.in_hyper_space:
             self.ship.hyper_space_ttl -= 1
             if self.ship.hyper_space_ttl == 0:
                 self.exit()
-    
-    def exit(self):
+
+    def exit(self) -> None:
         self.ship.in_hyper_space = False
         self.ship.color = (255, 255, 255)
         self.ship.thrust_jet.color = (255, 255, 255)

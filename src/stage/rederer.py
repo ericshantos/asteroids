@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from typing import List
+
 import pygame
 
 class Renderable(ABC):
@@ -7,11 +9,11 @@ class Renderable(ABC):
         raise NotImplementedError
 
 class Renderer:
-    def __init__(self, screen, showBoundingBoxes=False):
+    def __init__(self, screen: pygame.Surface, showBoundingBoxes: bool = False):
         self.screen = screen
         self.showBoundingBoxes = showBoundingBoxes
 
-    def draw_sprites(self, sprites):
+    def draw_sprites(self, sprites: List[Renderable]):
         for sprite in sprites:
             safe_color = tuple([max(0, min(255, c)) for c in sprite.color])
 

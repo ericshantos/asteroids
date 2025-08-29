@@ -16,16 +16,16 @@
 #    Copyright (C) 2018  Francisco Sanchez Arroyo
 #
 
-import pygame, math
 
 import math
 import pygame
 
 from .geometry import calculate_intersect_point
+from typing import Tuple, List
 
 class VectorSprite:
 
-    def __init__(self, position, heading, point_list, angle=0, color=(255, 255, 255)):
+    def __init__(self, position: Tuple[int, int], heading: Tuple[int, int], point_list: List[Tuple[int, int]], angle: float = 0, color: Tuple[int, int, int] = (255, 255, 255)):
         self.position = position
         self.heading = heading
         self.angle = angle
@@ -34,19 +34,19 @@ class VectorSprite:
         self.color = color
         self.ttl = 25
 
-        self.bounding_rect = pygame.Rect(0, 0, 0, 0)
-        self.transformed_point_list = []
+        self.bounding_rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
+        self.transformed_point_list: List[Tuple[int, int]] = []
 
-    def move(self):
+    def move(self) -> None:
         self._update_position()
         self.rotate_and_transform()
 
-    def _update_position(self):
+    def _update_position(self) -> None:
         self.position.x += self.heading.x
         self.position.y += self.heading.y
         self.angle += self.v_angle
 
-    def rotate_and_transform(self):
+    def rotate_and_transform(self) -> None:
         self.transformed_point_list = [
             self._translate_point(self._rotate_point(p))
             for p in self.point_list
@@ -55,29 +55,29 @@ class VectorSprite:
         self.update_bounding_rect()
 
 
-    def _rotate_point(self, point):
+    def _rotate_point(self, point: Tuple[int, int]) -> Tuple[int, int]:
         cos_val = math.cos(math.radians(self.angle))
         sin_val = math.sin(math.radians(self.angle))
         x = point[0] * cos_val + point[1] * sin_val
         y = point[1] * cos_val - point[0] * sin_val
-        return [int(x), int(y)]
+        return (int(x), int(y))
 
-    def _translate_point(self, point):
-        return [point[0] + self.position.x, point[1] + self.position.y]
+    def _translate_point(self, point: Tuple[int, int]) -> Tuple[int, int]:
+        return (point[0] + self.position.x, point[1] + self.position.y)
 
-    def scale(self, point, scale):
+    def scale(self, point: Tuple[int, int], scale: float) -> Tuple[int, int]:
         x = int(point[0] * scale)
         y = int(point[1] * scale)
-        return [x, y]
+        return (x, y)
 
-    def draw(self):
+    def draw(self) -> List[Tuple[int, int]]:
         self.rotate_and_transform()
         return self.transformed_point_list
 
-    def collides_with(self, target):
+    def collides_with(self, target: "VectorSprite") -> bool:
         return self.bounding_rect.colliderect(target.bounding_rect)
 
-    def check_polygon_collision(self, target):
+    def check_polygon_collision(self, target: "VectorSprite") -> Tuple[float, float] | None:
         for i in range(len(self.transformed_point_list)):
             for j in range(len(target.transformed_point_list)):
                 p1 = self.transformed_point_list[i-1]
@@ -89,7 +89,7 @@ class VectorSprite:
                     return p
         return None
 
-    def update_bounding_rect(self):
+    def update_bounding_rect(self) -> None:
         if not self.transformed_point_list:
             return
         xs = [p[0] for p in self.transformed_point_list]

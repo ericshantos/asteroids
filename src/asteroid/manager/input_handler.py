@@ -1,11 +1,12 @@
 import sys
 import pygame
 
+
 class InputHandler:
     def __init__(self, game):
         self.game = game
 
-    def process(self, events):
+    def process(self, events: pygame.event.Event):
         self.game.frameAdvance = False
         ship = self.game.ship_manager.ship
         state = self.game.state_manager.state
