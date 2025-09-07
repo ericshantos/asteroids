@@ -13,7 +13,7 @@ class CollisionSystem:
         ship = self.ship_manager.ship
         saucer = self.saucer_manager.saucer
         new_score = score
-        shipHit, saucerHit = False, False
+        ship_hit, saucer_hit = False, False
 
         # Rocks
         for rock in list(self.rock_manager.rocks):
@@ -21,11 +21,11 @@ class CollisionSystem:
 
             if not ship.in_hyper_space and rock.collides_with(ship):
                 if rock.check_polygon_collision(ship):
-                    shipHit = True
+                    ship_hit = True
                     rockHit = True
 
             if saucer and rock.collides_with(saucer):
-                saucerHit = True
+                saucer_hit = True
                 rockHit = True
 
             if saucer and saucer.bullet_collision(rock):
@@ -60,23 +60,25 @@ class CollisionSystem:
 
                 self.create_debris(rock)
 
-        # Saucer collisions
         if saucer:
+            if ship.bullet_collision(saucer):
+                saucer_hit = True
+                new_score += saucer.scoreValue 
+            
             if not ship.in_hyper_space and saucer.bullet_collision(ship):
                 shipHit = True
             if saucer.collides_with(ship):
                 shipHit = True
-                saucerHit = True
+                saucer_hit = True
 
-            if saucerHit:
+            if saucer_hit:
                 self.create_debris(saucer)
                 self.saucer_manager.kill_saucer()
 
-        # Notifica se a nave foi atingida
-        if shipHit:
+        if ship_hit:
             self.kill_ship()
 
-        return new_score, shipHit  # <-- retorna shipHit
+        return new_score, ship_hit
 
     def create_debris(self, sprite):
         for _ in range(25):

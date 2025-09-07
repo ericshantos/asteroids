@@ -29,8 +29,10 @@ class Saucer(Shooter):
         self.lastx = 0
         
         # Scale the shape
-        newPointList = [self.scale(point, data.scales[saucer_type]) for point in data.point_list]
-        super().__init__(position, heading, newPointList, stage, max_bullets)
+        new_point_list = [self.scale(point, data.scales[saucer_type]) for point in data.point_list]
+        super().__init__(position, heading, new_point_list, stage, max_bullets)
+
+        self.rotate_and_transform()
 
     # Set the bullet velocity and create the bullet
     def launch_bullet(self):
