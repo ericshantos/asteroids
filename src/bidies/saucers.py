@@ -7,7 +7,7 @@ from .datas import SaucerData
 
 
 class Saucer(Shooter):
-    def __init__(self, stage, saucer_type, ship, data=None):
+    def __init__(self, stage, saucer_type, ship, data=None, max_bullets=1):
         if data is None:
             data = SaucerData()
 
@@ -30,7 +30,7 @@ class Saucer(Shooter):
         
         # Scale the shape
         newPointList = [self.scale(point, data.scales[saucer_type]) for point in data.point_list]
-        super().__init__(position, heading, newPointList, stage)
+        super().__init__(position, heading, newPointList, stage, max_bullets)
 
     # Set the bullet velocity and create the bullet
     def launch_bullet(self):
