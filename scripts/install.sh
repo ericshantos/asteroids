@@ -1,5 +1,9 @@
 #!/bin/bash
 
-docker build -t asteroids:2.0.3 .
+set -e
 
-bash "$(dirname "$0")/run.sh"
+echo "🔨 Building development image..."
+docker build -t asteroids:dev .
+
+echo "🎮 Starting the game..."
+exec ./scripts/run.sh

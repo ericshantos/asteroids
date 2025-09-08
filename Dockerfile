@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     alsa-utils \
     pulseaudio \
+    x11-xserver-utils \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -21,4 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "run_game.py"]
+RUN chmod +x /app/scripts/docker-entrypoint.sh
+
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
