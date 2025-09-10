@@ -1,6 +1,6 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-bullseye
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libsdl2-dev \
     libsdl2-image-dev \
     libsdl2-mixer-dev \
@@ -20,8 +20,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY . /app
 
-RUN chmod +x /app/scripts/docker-entrypoint.sh
+RUN chmod +x /app/start.sh
 
-ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
+ENTRYPOINT ["app", "docker-entrypoint.sh"]

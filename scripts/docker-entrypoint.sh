@@ -1,87 +1,61 @@
 #!/bin/bash
-
 set -e
 
 setup_display() {
-    echo "Setting up display environment..."
+    echo "🔎 Checking display..."
     
     if [ -e "/tmp/.X11-unix" ]; then
         xhost +local:docker >/dev/null 2>&1 || true
-        echo "✓ X11 configuration applied"
+        echo "✅ Display available and X11 configured"
     else
-        echo "⚠ X11 environment not detected (headless mode?)"
+        echo "❌ Error: X11 environment not detected. Make sure the display is exported."
+        exit 1
     fi
 }
 
 setup_audio() {
-    echo "Setting up audio..."
+    echo "🔎 Checking audio..."
     
     if [ -e "/dev/snd" ]; then
-        if [ ! -d "/tmp/pulse" ]; then
-            mkdir -p /tmp/pulse
-        fi
+        mkdir -p /tmp/pulse
         
-        if [ -e "/run/user/$(id -u)/pulse/native" ]; then
+        if [ -S "/run/user/$(id -u)/pulse/native" ]; then
             ln -sf /run/user/$(id -u)/pulse/native /tmp/pulse/native 2>/dev/null || true
             export PULSE_SERVER=unix:/tmp/pulse/native
-            echo "✓ Audio configuration applied"
+            echo "✅ Audio configured with PulseAudio"
         else
-            echo "⚠ PulseAudio socket not found (audio may not work)"
+            echo "❌ Error: PulseAudio socket not found."
+            exit 1
         fi
     else
-        echo "⚠ Audio device not available (silent mode?)"
+        echo "❌ Error: Audio device (/dev/snd) not available."
+        exit 1
     fi
 }
 
 check_dependencies() {
-    echo "Checking dependencies..."
+    echo "🔎 Checking dependencies..."
     
     if ! command -v python >/dev/null 2>&1; then
-        echo "❌ Python not found!"
+        echo "❌ Python not found in the container!"
         exit 1
     fi
     
-    if [ ! -f "run_game.py" ]; then
-        echo "❌ File run_game.py not found!"
+    if [ ! -f "/app/run_game.py" ]; then
+        echo "❌ File run_game.py not found in /app!"
         exit 1
     fi
     
-    echo "✓ All dependencies verified"
-}
-
-development_mode() {
-    echo "🎮 Mode: Development (local)"
-    echo "Starting Asteroids..."
-    
-    exec python run_game.py
-}
-
-production_mode() {
-    echo "🚀 Mode: Production (Docker Hub)"
-    echo "Starting Asteroids..."
-    
-    exec python run_game.py
+    echo "✅ Dependencies successfully verified"
 }
 
 main() {
-    echo "========================================"
-    echo "      Atari Asteroids - Docker Edition   "
-    echo "========================================"
-    
     setup_display
     setup_audio
     check_dependencies
     
-    if [ -f "/.dockerenv" ]; then
-        if [ -d "/app" ] && [ -f "/app/run_game.py" ]; then
-            production_mode
-        else
-            echo "❌ Inconsistent production environment"
-            exit 1
-        fi
-    else
-        development_mode
-    fi
+    echo "🎮 Starting game..."
+    exec python /app/run_game.py
 }
 
 main "$@"
