@@ -44,6 +44,10 @@ class CollisionManager:
 
             distance = ((self.player.x - asteroid.x) ** 2 + (self.player.y - asteroid.y) ** 2) ** 0.5
             if distance < (self.player.radius + asteroid.radius):
+                
+                if self.game and hasattr(self.game, 'sound_manager'):
+                    self.game.sound_manager.play_explosion()
+                
                 self.player.trigger_explosion()
                 asteroid.trigger_explosion() 
                 self._split_asteroid(asteroid) 
@@ -60,12 +64,19 @@ class CollisionManager:
                 distance = ((bullet.x - asteroid.x) ** 2 + (bullet.y - asteroid.y) ** 2) ** 0.5
                 if distance < asteroid.radius:
                     bullets_to_remove.append(bullet)
+
+                    if self.game and hasattr(self.game, 'sound_manager'):
+                        self.game.sound_manager.play_explosion()
+
                     asteroid.trigger_explosion()
                     
                     score_table = {3: 20, 2: 50, 1: 100}
                     points = score_table.get(asteroid.size, 0)
                     self.score_manager.add_points(points)
                     
+                    if self.score_manager.score_for_extra_life >= 10000  and self.game:
+                        pass
+
                     self._split_asteroid(asteroid)
                     break
 
@@ -85,6 +96,9 @@ class CollisionManager:
                 if saucer_rect.collidepoint(bullet.x, bullet.y):
                     bullets_to_remove.append(bullet)
                     
+                    if hasattr(self.game, 'sound_manager'):
+                        self.game.sound_manager.play_explosion()
+
                     saucer.trigger_explosion() 
                     
                     points = 1000 if saucer.size_type == "small" else 200
@@ -105,6 +119,10 @@ class CollisionManager:
             distance = ((bullet.x - self.player.x) ** 2 + (bullet.y - self.player.y) ** 2) ** 0.5
             
             if distance < self.player.radius:
+
+                if hasattr(self.game, 'sound_manager'):
+                    self.game.sound_manager.play_explosion()
+                    
                 saucer.bullets.remove(bullet)
                 self.player.trigger_explosion()
                 break

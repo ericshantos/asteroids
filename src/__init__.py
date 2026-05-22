@@ -6,6 +6,7 @@ from typing import Tuple
 from .entities import Player, Asteroid, BulletManager, Saucer
 from .core import CollisionManager, GameStateManager
 from .ui import ScoreManager, HUD
+from .audio import SoundManager
 
 
 class Game:
@@ -21,6 +22,8 @@ class Game:
         pygame.display.set_caption("Asteroids")
         self.clock: pygame.time.Clock = pygame.time.Clock()
         
+        self.sound_manager = SoundManager()
+
         self.running: bool = True
         self.state_manager = GameStateManager()
         
@@ -42,6 +45,8 @@ class Game:
             score_manager=self.score_manager,
             game=self
         )
+
+        self.score_manager.game = self
 
     def _reset_game_entities(self) -> None:
         self.player = Player(self.WIDTH // 2, self.HEIGHT // 2)
@@ -66,6 +71,8 @@ class Game:
             score_manager=self.score_manager
         )
 
+        self.score_manager.game = self
+
     def handle_events(self) -> None:
         current_state = self.state_manager.current_state
 
@@ -86,6 +93,7 @@ class Game:
                             y=self.player.y, 
                             angle=self.player.angle
                         )
+                        self.sound_manager.play_shoot()
                     elif event.key == pygame.K_p:
                         self.state_manager.toggle_pause()
                 
@@ -106,6 +114,9 @@ class Game:
                     asteroid.update()
 
             elif current_state == "PLAYING":
+                if self.player.is_accelerating and self.player.is_alive:
+                    self.sound_manager.play_thrust()
+
                 self.player.update()
                 
                 for asteroid in self.asteroids:
@@ -116,6 +127,7 @@ class Game:
                     if now - self.last_saucer_spawn > self.saucer_spawn_interval:
                         saucer_size = "small" if random.random() < 0.3 else "large"
                         self.saucer = Saucer(self.WIDTH, self.HEIGHT, size_type=saucer_size)
+                        self.sound_manager.play_saucer_appear(saucer_size)
                         self.last_saucer_spawn = now
                 else:
                     self.saucer.move(player_x=self.player.x, player_y=self.player.y)
