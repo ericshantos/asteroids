@@ -43,9 +43,9 @@ class Player:
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
-            self.angle += self.rotation_speed
-        if keys[pygame.K_RIGHT]:
             self.angle -= self.rotation_speed
+        if keys[pygame.K_RIGHT]:
+            self.angle += self.rotation_speed
 
         if keys[pygame.K_UP]:
             self.is_accelerating = True
