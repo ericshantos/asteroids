@@ -36,7 +36,7 @@ class Game:
         self.last_saucer_spawn = pygame.time.get_ticks()
         self.saucer_spawn_interval = 15000
         
-        self.asteroids = [Asteroid(size=3) for _ in range(4)]
+        self.asteroids = [Asteroid(size=3) for _ in range(5)]
         
         self.collision_manager = CollisionManager(
             player=self.player, 
